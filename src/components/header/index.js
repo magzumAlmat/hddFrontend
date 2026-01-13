@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,9 +10,6 @@ import {
   Typography,
   Button,
   Box,
-  MenuItem,
-  Select,
-  FormControl,
   Badge,
   IconButton,
   Drawer,
@@ -22,273 +19,306 @@ import {
   Container,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Phone, ShoppingCartOutlined, Menu as MenuIcon } from "@mui/icons-material";
+import { ShoppingCartOutlined, Menu as MenuIcon, Close } from "@mui/icons-material";
 import {
   getAllProductsAction,
   setSelectedMainTypeReducer,
   setSelectedTypeReducer,
 } from "@/store/slices/productSlice";
 import { logoutAction } from "@/store/slices/authSlice";
-import logo from "/public/image/cable/logo.png";
-import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
-import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
+import logo from "/public/image/IMG_3105.PNG";
+import { brandColors, typography, borderRadius, transitions, spacing } from "@/theme/brandColors";
 
-// Стилизованные компоненты
-const StyledAppBar = styled(AppBar)(({ theme }) => ({
-  background: "linear-gradient(90deg, rgba(215, 199, 184, 1) 42%, rgba(0, 184, 173, 1) 93%)",
-  boxShadow: "0 3px 15px rgba(0,0,0,0.1)",
-  height: "100px", // Фиксированная высота, соответствующая логотипу
+// === STYLED COMPONENTS ===
+const StyledAppBar = styled(AppBar)(({ theme, $scrolled }) => ({
+  background: $scrolled 
+    ? 'rgba(232, 73, 29, 0.95)' 
+    : brandColors.primary.gradient,
+  backdropFilter: $scrolled ? 'blur(10px)' : 'none',
+  boxShadow: $scrolled ? brandColors.shadows.large : brandColors.shadows.medium,
+  transition: transitions.normal,
+  position: 'sticky',
+  top: 0,
+  zIndex: 1100,
+  
   [theme.breakpoints.down("sm")]: {
-    height: "60px", // Уменьшенная высота для мобильных устройств
+    minHeight: '70px',
   },
 }));
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
-  height: "100px", // Та же высота, что у AppBar
-  minHeight: "100px !important", // Переопределяем стандартную высоту MUI
+  minHeight: '90px !important',
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
+  padding: `${spacing.sm} ${spacing.md}`,
+  
   [theme.breakpoints.down("sm")]: {
-    height: "60px",
-    minHeight: "60px !important",
+    minHeight: '70px !important',
+    padding: `${spacing.xs} ${spacing.sm}`,
   },
 }));
 
-const StyledSelect = styled(Select)(({ theme }) => ({
-  color: "#333333",
-  "& .MuiSelect-icon": {
-    color: "#333333",
+const NavButton = styled(Button)(({ theme }) => ({
+  color: brandColors.neutral.white,
+  textTransform: "none",
+  fontSize: typography.fontSize.base,
+  fontWeight: typography.fontWeight.medium,
+  padding: `${spacing.sm} ${spacing.md}`,
+  borderRadius: borderRadius.lg,
+  position: 'relative',
+  transition: transitions.normal,
+  
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    bottom: 0,
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: 0,
+    height: '2px',
+    background: brandColors.neutral.white,
+    transition: transitions.normal,
   },
-  "& .MuiOutlinedInput-notchedOutline": {
-    borderColor: "#ADD8E6",
+
+  "&:hover": {
+    background: 'rgba(255, 255, 255, 0.1)',
+    textShadow: '0 0 10px rgba(255, 255, 255, 0.8)',
+    
+    '&::before': {
+      width: '80%',
+    },
   },
-  "&:hover .MuiOutlinedInput-notchedOutline": {
-    borderColor: "#ADD8E6",
-  },
-  height: "40px", // Уменьшенная высота для выпадающих списков
-  [theme.breakpoints.down("sm")]: {
-    height: "32px",
+
+  [theme.breakpoints.down("md")]: {
+    fontSize: typography.fontSize.sm,
+    padding: `${spacing.xs} ${spacing.sm}`,
   },
 }));
 
 const CartButton = styled(Button)(({ theme }) => ({
-  borderRadius: 20,
-  padding: "6px 16px",
+  borderRadius: borderRadius.full,
+  padding: `${spacing.sm} ${spacing.lg}`,
   textTransform: "none",
-  backgroundColor: "#ADD8E6",
-  color: "#333333",
+  background: brandColors.neutral.white,
+  color: brandColors.primary.main,
+  fontWeight: typography.fontWeight.semibold,
+  boxShadow: brandColors.shadows.small,
+  transition: transitions.normal,
+  
   "&:hover": {
-    backgroundColor: "#FFFACD",
+    background: brandColors.neutral.white,
+    transform: 'translateY(-2px)',
+    boxShadow: brandColors.shadows.glow,
   },
-  height: "40px", // Высота кнопки корзины
+
   [theme.breakpoints.down("sm")]: {
-    height: "32px",
-    padding: "4px 12px",
+    padding: `${spacing.xs} ${spacing.md}`,
+    minWidth: 'auto',
   },
 }));
 
-const CategoryButton = styled(Button)(({ theme }) => ({
-  color: "#333333",
-  textTransform: "none",
-  "&:hover": {
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+const MobileMenuButton = styled(IconButton)(({ theme }) => ({
+  color: brandColors.neutral.white,
+  background: 'rgba(255, 255, 255, 0.1)',
+  borderRadius: borderRadius.md,
+  padding: spacing.sm,
+  
+  '&:hover': {
+    background: 'rgba(255, 255, 255, 0.2)',
   },
-  height: "40px", // Высота кнопок категорий
-  [theme.breakpoints.down("sm")]: {
-    height: "32px",
+}));
+
+const StyledDrawer = styled(Drawer)(({ theme }) => ({
+  '& .MuiDrawer-paper': {
+    width: 280,
+    background: `linear-gradient(180deg, ${brandColors.primary.dark} 0%, ${brandColors.primary.main} 100%)`,
+    color: brandColors.neutral.white,
+    padding: spacing.lg,
+  },
+}));
+
+const DrawerHeader = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: spacing.lg,
+  paddingBottom: spacing.md,
+  borderBottom: `1px solid rgba(255, 255, 255, 0.2)`,
+}));
+
+const DrawerListItem = styled(ListItem)(({ theme }) => ({
+  borderRadius: borderRadius.md,
+  marginBottom: spacing.xs,
+  transition: transitions.normal,
+  cursor: 'pointer',
+  
+  '&:hover': {
+    background: 'rgba(255, 255, 255, 0.15)',
+    transform: 'translateX(8px)',
+  },
+}));
+
+const LogoContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  cursor: 'pointer',
+  transition: transitions.normal,
+  
+  '&:hover': {
+    transform: 'scale(1.05)',
   },
 }));
 
 export default function Header() {
-  console.log('Header rendering');
   const dispatch = useDispatch();
-  const { host, userCart } = useSelector((state) => state.usercart);
+  const { userCart } = useSelector((state) => state.usercart);
   const cartItemCount = userCart.length;
-
   const router = useRouter();
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  const { clickCount, allProducts, selectedMainType, selectedType } = useSelector(
-    (state) => state.usercart
-  );
-
-  // Извлекаем все уникальные категории из allProducts
-  const uniqueCategories = [
-    ...new Set(
-      allProducts
-        .flatMap((item) => item.Categories)
-        .map((category) => category.name)
-    ),
-  ];
-
-  const uniqueTypes = selectedMainType
-    ? [
-        ...new Set(
-          allProducts
-            .filter((item) =>
-              item.Categories.some((cat) => cat.name === selectedMainType)
-            )
-            .map((item) => item.type)
-        ),
-      ]
-    : [];
+  const { allProducts } = useSelector((state) => state.usercart);
 
   useEffect(() => {
-    // Загружаем все товары только при монтировании, без фильтров
     dispatch(getAllProductsAction());
+    
+    // Scroll effect
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [dispatch]);
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
-
-  const handleNavItemClick = (mainType) => {
-    dispatch(setSelectedMainTypeReducer(mainType === "Все товары" ? "" : mainType));
-    dispatch(setSelectedTypeReducer(""));
-    router.push("/katalog-tovarov");
-  };
-
-  const handleTypeChange = (event) => {
-    const type = event.target.value;
-    dispatch(setSelectedTypeReducer(type === "Все типы" ? "" : type));
-    router.push("/katalog-tovarov");
-  };
 
   const handleLogout = () => {
     dispatch(logoutAction());
     router.push("/login");
   };
 
-  const handleCategorySelect = (category) => {
-    dispatch(setSelectedMainTypeReducer(category));
-    dispatch(setSelectedTypeReducer(""));
-    router.push("/katalog-tovarov");
-    setMobileOpen(false); // Закрываем мобильное меню после выбора
-  };
+  const navigationItems = [
+    { label: "Каталог товаров", path: "/katalog-tovarov" },
+    { label: "О бренде", path: "/about" },
+    { label: "Хит продаж", path: "/promo" },
+    // { label: "Скидки", path: "/tips" },
+    // { label: "Премиум", path: "/premium" },
+    { label: "Контакты", path: "/contactpage" },
+  ];
 
-  // Мобильное меню
+  // Mobile menu
   const drawer = (
-    <Box sx={{ width: 250, p: 2, backgroundColor: "#F5F5F5" }}>
+    <Box>
+      <DrawerHeader>
+        <Typography variant="h6" fontWeight={typography.fontWeight.bold}>
+          Меню
+        </Typography>
+        <IconButton onClick={handleDrawerToggle} sx={{ color: brandColors.neutral.white }}>
+          <Close />
+        </IconButton>
+      </DrawerHeader>
+      
       <List>
-        <ListItem button key="home" onClick={() => { router.push("/"); setMobileOpen(false); }}>
-          <ListItemText primary="Главная" />
-        </ListItem>
-        <ListItem button key="categories">
-          <ListItemText primary="Каталог товаров"  onClick={() => { router.push("/katalog-tovarov"); setMobileOpen(false); }}/>
-        </ListItem>
-        {/* {uniqueCategories.map((category) => (
-          <ListItem
-            button
-            key={category}
-            onClick={() => handleCategorySelect(category)}
-            sx={{ pl: 4 }}
+        <DrawerListItem onClick={() => { router.push("/"); setMobileOpen(false); }}>
+          <ListItemText 
+            primary="Главная" 
+            primaryTypographyProps={{ fontWeight: typography.fontWeight.medium }}
+          />
+        </DrawerListItem>
+        
+        {navigationItems.map((item) => (
+          <DrawerListItem 
+            key={item.path}
+            onClick={() => { router.push(item.path); setMobileOpen(false); }}
           >
-            <ListItemText primary={category} />
-          </ListItem>
-        ))} */}
-        <ListItem button key="about" onClick={() => { router.push("/about"); setMobileOpen(false); }}>
-          <ListItemText primary="О бренде" />
-        </ListItem>
-        <ListItem button key="tips" onClick={() => { router.push("/tips"); setMobileOpen(false); }}>
-          <ListItemText primary="Скидочные товары" />
-        </ListItem>
-
-         <ListItem button key="premium" onClick={() => { router.push("/premium"); setMobileOpen(false); }}>
-          <ListItemText primary="Премиум" />
-        </ListItem>
-
-        <ListItem button key="promo" onClick={() => { router.push("/promo"); setMobileOpen(false); }}>
-          <ListItemText primary="Распродажа" />
-        </ListItem>
-        <ListItem button key="contactpage" onClick={() => { router.push("/contactpage"); setMobileOpen(false); }}>
-          <ListItemText primary="Контакты" />
-        </ListItem>
-        <ListItem button key="logout" onClick={() => { handleLogout(); setMobileOpen(false); }}>
-          <ListItemText primary="Вход" />
-        </ListItem>
+            <ListItemText 
+              primary={item.label}
+              primaryTypographyProps={{ fontWeight: typography.fontWeight.medium }}
+            />
+          </DrawerListItem>
+        ))}
+        
+        <DrawerListItem onClick={() => { handleLogout(); setMobileOpen(false); }}>
+          <ListItemText 
+            primary="Вход"
+            primaryTypographyProps={{ fontWeight: typography.fontWeight.medium }}
+          />
+        </DrawerListItem>
       </List>
     </Box>
   );
 
   return (
     <>
-      <Box sx={{ bgcolor: "#F5F5F5", py: 1 }}>
-        <Container maxWidth="lg"></Container>
-      </Box>
-
-      <StyledAppBar position="static">
+      <StyledAppBar position="sticky" $scrolled={scrolled}>
         <Container maxWidth="lg">
           <StyledToolbar>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <Button onClick={() => router.push("/")} sx={{ p: 0 }}>
-                <Image
-                  src={logo}
-                  alt="logo"
-                  width={180} // Уменьшенная ширина для реальной высоты
-                  height={90} // Высота логотипа синхронизирована с AppBar
-                  style={{ 
-                    objectFit: "contain",
-                    width: { xs: 120, sm: 180 },
-                    height: { xs: 60, sm: 90 },
-                  }}
-                />
-              </Button>
+            {/* Logo */}
+            <LogoContainer onClick={() => router.push("/")}>
+              <Image
+                src={logo}
+                alt="HDCI Logo"
+                width={160}
+                height={80}
+                style={{ 
+                  objectFit: "contain",
+                  filter: 'drop-shadow(0 0 10px rgba(255, 255, 255, 0.3))',
+                }}
+                priority
+              />
+            </LogoContainer>
+
+            {/* Desktop Navigation */}
+            <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", gap: 1 }}>
+              {navigationItems.map((item) => (
+                <NavButton key={item.path} onClick={() => router.push(item.path)}>
+                  {item.label}
+                </NavButton>
+              ))}
             </Box>
 
-            <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", gap: 2 }}>
-              <CategoryButton onClick={() => router.push("/katalog-tovarov")}>
-                Каталог товаров
-              </CategoryButton>
-              <CategoryButton onClick={() => router.push("/about")}>
-                О бренде
-              </CategoryButton>
-              <CategoryButton onClick={() => router.push("/promo")}>
-                Хит продаж
-              </CategoryButton>
-              <CategoryButton onClick={() => router.push("/tips")}>
-                Скидочные товары
-              </CategoryButton>
-
-               <CategoryButton onClick={() => router.push("/premium")}>
-Премиум
-              </CategoryButton>
-
-              <CategoryButton onClick={() => router.push("/contactpage")}>
-                Контакты
-              </CategoryButton>
-            </Box>
-
+            {/* Cart & Mobile Menu */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <CartButton
                 variant="contained"
-                startIcon={<ShoppingBagOutlinedIcon sx={{ color: "#333333" }} />}
+                startIcon={<ShoppingCartOutlined />}
                 onClick={() => router.push("/cart")}
               >
+                <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                  Корзина
+                </Box>
                 {cartItemCount > 0 && (
-                  <Badge badgeContent={cartItemCount} color="black" sx={{ ml: 1 }} />
+                  <Badge 
+                    badgeContent={cartItemCount} 
+                    color="error" 
+                    sx={{ ml: 1 }}
+                  />
                 )}
               </CartButton>
 
-              <IconButton
-                color="inherit"
+              <MobileMenuButton
                 edge="end"
                 onClick={handleDrawerToggle}
-                sx={{ display: { md: "none" }, color: "#333333" }}
+                sx={{ display: { md: "none" } }}
               >
                 <MenuIcon />
-              </IconButton>
+              </MobileMenuButton>
             </Box>
           </StyledToolbar>
         </Container>
       </StyledAppBar>
 
-      <Drawer
+      {/* Mobile Drawer */}
+      <StyledDrawer
         anchor="right"
         open={mobileOpen}
         onClose={handleDrawerToggle}
-        sx={{ display: { md: "none" } }}
       >
         {drawer}
-      </Drawer>
+      </StyledDrawer>
     </>
   );
 }

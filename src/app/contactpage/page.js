@@ -4,7 +4,7 @@
 import "/src/app/globals.css";
 import Header from "@/components/header";
 import Link from "next/link";
-import { Phone, WhatsApp, Instagram } from "@mui/icons-material";
+import { Phone, WhatsApp, Instagram, LocationOn } from "@mui/icons-material";
 import Image from "next/image";
 export default function ContactPage() {
   return (
@@ -16,7 +16,7 @@ export default function ContactPage() {
         <div className="hero-container">
           <div className="hero-content">
             <h1 className="hero-title">
-              Свяжитесь с <span className="accent-text">TOTU</span>
+              Свяжитесь с <span className="accent-text">HDD</span>
             </h1>
             <p className="hero-description">
               Мы всегда на связи! Напишите или позвоните нам, чтобы узнать больше о наших товарах или оформить заказ.
@@ -26,18 +26,22 @@ export default function ContactPage() {
             </Link>
           </div>
           <div className="hero-image">
-            <div className="image-placeholder hero-placeholder">
-              {/* <span>Изображение службы поддержки</span> */}
-                 <Image
-                                  src="/image/map.png"
-                                  alt="map"
-                                  width={550}
-                                  height={350}
-                                  style={{ objectFit: "cover", cursor: "pointer" }}
-                                  loading="lazy"
-                                  // onClick={() => openModal("/image/map.png")}
-                                />
-            </div>
+            <Link href="https://go.2gis.com/Ak2mD" target="_blank" rel="noopener noreferrer">
+              <div className="map-container">
+                <Image
+                  src="/image/map.png"
+                  alt="Наше местоположение на 2GIS"
+                  width={550}
+                  height={350}
+                  style={{ objectFit: "cover", cursor: "pointer", borderRadius: '10px' }}
+                  loading="lazy"
+                />
+                <div className="map-overlay">
+                  <LocationOn sx={{ fontSize: 48, color: "#E8491D" }} />
+                  <p>Открыть в 2GIS</p>
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
       </section>
@@ -49,7 +53,7 @@ export default function ContactPage() {
           <div className="contact-grid">
             <div className="contact-card">
               <div className="contact-icon">
-                <Phone sx={{ fontSize: 40, color: "#00C4B4" }} />
+                <Phone sx={{ fontSize: 40, color: "#E8491D" }} />
               </div>
               <h3 className="contact-title">Мобильный телефон</h3>
               <p className="contact-description">
@@ -61,7 +65,7 @@ export default function ContactPage() {
             </div>
             <div className="contact-card">
               <div className="contact-icon">
-                <WhatsApp sx={{ fontSize: 40, color: "#00C4B4" }} />
+                <WhatsApp sx={{ fontSize: 40, color: "#E8491D" }} />
               </div>
               <h3 className="contact-title">WhatsApp</h3>
               <p className="contact-description">
@@ -73,26 +77,26 @@ export default function ContactPage() {
             </div>
             <div className="contact-card">
               <div className="contact-icon">
-                <Instagram sx={{ fontSize: 40, color: "#00C4B4" }} />
+                <Instagram sx={{ fontSize: 40, color: "#E8491D" }} />
               </div>
               <h3 className="contact-title">Instagram</h3>
               <p className="contact-description">
                 Следите за новинками и акциями в нашем Instagram.
               </p>
-              <Link href="https://www.instagram.com/totu_shop?igsh=M25iODNiN3g3cHlr">
-                <span className="contact-link">@totu_shop</span>
+              <Link href="https://www.instagram.com/hdd_kz?igsh=ajUxenkxejhmZWZv&utm_source=qr">
+                <span className="contact-link">@hdd_kz</span>
               </Link>
             </div>
             <div className="contact-card">
               <div className="contact-icon">
-                <span style={{ fontSize: 40, color: "#00C4B4" }}>🎵</span>
+                <span style={{ fontSize: 40, color: "#E8491D" }}>🎵</span>
               </div>
               <h3 className="contact-title">TikTok</h3>
               <p className="contact-description">
                 Смотрите наши видео и обзоры в TikTok.
               </p>
-              <Link href="https://www.tiktok.com/@totu_shop?_t=ZM-8yRFaNSVxyf&_r=1">
-                <span className="contact-link">@totu_shop</span>
+              <Link href="https://www.tiktok.com/@hddofficial?_r=1&_t=ZM-932koRkLW0q">
+                <span className="contact-link">@hddofficial</span>
               </Link>
             </div>
           </div>
@@ -157,7 +161,7 @@ export default function ContactPage() {
         }
 
         .accent-text {
-          color: #00C4B4;
+          color: #E8491D;
         }
 
         .hero-description {
@@ -168,7 +172,7 @@ export default function ContactPage() {
         }
 
         .cta-button {
-          background: #00C4B4;
+          background: #E8491D;
           color: white;
           border: none;
           padding: 14px 28px;
@@ -206,14 +210,45 @@ export default function ContactPage() {
         }
 
         .image-placeholder:hover {
-          border-color: #00C4B4;
-          color: #00C4B4;
+          border-color: #E8491D;
+          color: #E8491D;
         }
 
-        .hero-placeholder {
-          width: 350px;
-          height: 250px;
-          font-size: 1rem;
+        .map-container {
+          width: 550px;
+          height: 350px;
+          border-radius: 10px;
+          overflow: hidden;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+          position: relative;
+          transition: all 0.3s ease;
+        }
+
+        .map-container:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 8px 30px rgba(232, 73, 29, 0.3);
+        }
+
+        .map-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.4);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          color: white;
+          font-weight: 600;
+          font-size: 1.2rem;
+        }
+
+        .map-container:hover .map-overlay {
+          opacity: 1;
         }
 
         /* Contact Section */
@@ -277,7 +312,7 @@ export default function ContactPage() {
         .contact-link {
           font-size: 1rem;
           font-weight: 500;
-          color: #00C4B4;
+          color: #E8491D;
           text-decoration: none;
           transition: color 0.3s ease;
         }
@@ -322,18 +357,18 @@ export default function ContactPage() {
         }
 
         .cta-button.primary {
-          background: #00C4B4;
+          background: #E8491D;
           box-shadow: 0 2px 10px rgba(0, 196, 180, 0.3);
         }
 
         .cta-button.secondary {
           background: transparent;
-          border: 2px solid #00C4B4;
-          color: #00C4B4;
+          border: 2px solid #E8491D;
+          color: #E8491D;
         }
 
         .cta-button.secondary:hover {
-          background: #00C4B4;
+          background: #E8491D;
           color: white;
           box-shadow: 0 2px 10px rgba(0, 196, 180, 0.3);
         }
@@ -362,9 +397,10 @@ export default function ContactPage() {
             font-size: 2rem;
           }
 
-          .hero-placeholder {
-            width: 250px;
-            height: 180px;
+          .map-container {
+            width: 100%;
+            max-width: 350px;
+            height: 250px;
           }
 
           .section-title {
@@ -395,9 +431,10 @@ export default function ContactPage() {
             font-size: 1.6rem;
           }
 
-          .hero-placeholder {
-            width: 200px;
-            height: 140px;
+          .map-container {
+            width: 100%;
+            max-width: 300px;
+            height: 200px;
           }
         }
       `}</style>

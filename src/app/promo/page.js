@@ -30,7 +30,7 @@ export default function PromoPage() {
         <div className="hero-container">
           <div className="hero-content">
             <h1 className="hero-title">
-              Хиты продаж <span className="accent-text">TOTU</span>
+              Хиты продаж <span className="accent-text">HDD</span>
             </h1>
             <p className="hero-description">
               Самые востребованные аксессуары от Apple и Samsung — оригиналы, проверенные миллионами пользователей.
@@ -43,7 +43,7 @@ export default function PromoPage() {
             <div className="image-placeholder hero-placeholder">
               <Image
                 src="/image/saleshit.jpg"
-                alt="Хиты продаж TOTU"
+                alt="Хиты продаж HDD"
                 width={550}
                 height={300}
                 style={{ objectFit: "cover", cursor: "pointer" }}
@@ -219,7 +219,7 @@ export default function PromoPage() {
           <div className="cta-content">
             <h2 className="cta-title">Оригинальные аксессуары ждут вас!</h2>
             <p className="cta-description">
-              TOTU гарантирует подлинность товаров и лучшие цены. Сделайте заказ прямо сейчас!
+              HDD гарантирует подлинность товаров и лучшие цены. Сделайте заказ прямо сейчас!
             </p>
             <div className="cta-buttons">
               <Link href="/contactpage">
@@ -271,7 +271,7 @@ export default function PromoPage() {
         }
 
         .accent-text {
-          color: #00C4B4;
+          color: #E8491D;
         }
 
         .hero-description {
@@ -282,7 +282,7 @@ export default function PromoPage() {
         }
 
         .cta-button {
-          background: #00C4B4;
+          background: #E8491D;
           color: white;
           border: none;
           padding: 14px 28px;
@@ -334,7 +334,7 @@ export default function PromoPage() {
           position: absolute;
           top: 20px;
           right: 20px;
-          background: #00C4B4;
+          background: #E8491D;
           color: white;
           border: none;
           width: 40px;
@@ -368,8 +368,8 @@ export default function PromoPage() {
         }
 
         .image-placeholder:hover {
-          border-color: #00C4B4;
-          color: #00C4B4;
+          border-color: #E8491D;
+          color: #E8491D;
         }
 
         .hero-placeholder {
@@ -477,18 +477,18 @@ export default function PromoPage() {
         }
 
         .cta-button.primary {
-          background: #00C4B4;
+          background: #E8491D;
           box-shadow: 0 2px 10px rgba(0, 196, 180, 0.3);
         }
 
         .cta-button.secondary {
           background: transparent;
-          border: 2px solid #00C4B4;
-          color: #00C4B4;
+          border: 2px solid #E8491D;
+          color: #E8491D;
         }
 
         .cta-button.secondary:hover {
-          background: #00C4B4;
+          background: #E8491D;
           color: white;
           box-shadow: 0 2px 10px rgba(0, 196, 180, 0.3);
         }

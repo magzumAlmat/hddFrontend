@@ -25,21 +25,26 @@ import axios from "axios";
 import Head from "next/head";
 import Image from "next/image";
 import { ShoppingCartOutlined, Close } from "@mui/icons-material";
+import { brandColors, typography, borderRadius, transitions, spacing } from "@/theme/brandColors";
 
 // === СТИЛИ ===
 const StyledButton = styled(Button)(({ theme }) => ({
-  borderRadius: "25px",
-  padding: "10px 20px",
-  backgroundColor: "#ADD8E6",
-  color: "#333333",
+  borderRadius: borderRadius.full,
+  padding: `${spacing.sm} ${spacing.lg}`,
+  background: brandColors.primary.gradient,
+  color: brandColors.neutral.white,
   textTransform: "none",
-  fontWeight: 600,
+  fontWeight: typography.fontWeight.semibold,
+  boxShadow: brandColors.shadows.medium,
+  transition: transitions.normal,
   "&:hover": {
-    backgroundColor: "#87CEEB",
+    background: brandColors.primary.gradientHover,
+    transform: 'translateY(-2px)',
+    boxShadow: brandColors.shadows.glow,
   },
   "&:disabled": {
-    backgroundColor: "#D3D3D3",
-    color: "#666666",
+    background: brandColors.neutral.paleGray,
+    color: brandColors.neutral.mediumGray,
   },
 }));
 
@@ -142,7 +147,7 @@ export default function ProductDetailPage({ params = {} }) {
 
   // === Генерация URL изображения ===
   const getImageUrl = (imagePath) => {
-    if (!imagePath) return "/placeholder.jpg";
+    if (!imagePath) return "/image/placeholder-image.jpg";
     const base = BASE_URL.replace(/\/api\/store$/, "");
     return `${base}${imagePath}`;
   };
@@ -201,7 +206,7 @@ export default function ProductDetailPage({ params = {} }) {
                       onClick={() => handleImageClick(src)}
                     >
                       <Image
-                        src={imageErrors[errorKey] ? "/placeholder.jpg" : src}
+                        src={imageErrors[errorKey] ? "/image/placeholder-image.jpg" : src}
                         alt={`${product.name} - фото ${index + 1}`}
                         width={600}
                         height={400}

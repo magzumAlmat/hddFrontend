@@ -12,12 +12,12 @@ import "/src/app/globals.css";
 const banners = [
   {
     image: "/image/banner1.jpg",
-    title: "TOTU — Стильные аксессуары",
+    title: "HDD — Стильные аксессуары",
     subtitle: "Качественные чехлы, наушники и многое другое для ваших устройств",
   },
   {
     image: "/image/banner2.jpg",
-    title: "Новинки от TOTU",
+    title: "Новинки от HDD",
     subtitle: "Ознакомьтесь с последними трендами в аксессуарах",
   },
   {
@@ -188,10 +188,10 @@ export default function AboutPage() {
         <div className="hero-container">
           <div className="hero-content">
             <h1 className="hero-title">
-              TOTU — аксессуары для <span className="accent-text">вашего стиля</span>
+              HDD — аксессуары для <span className="accent-text">вашего стиля</span>
             </h1>
             <p className="hero-description">
-              Официальный представитель бренда TOTU в Казахстане. Качественные и стильные аксессуары для смартфонов и не только.
+              Официальный представитель бренда HDD в Казахстане. Качественные и стильные аксессуары для смартфонов и не только.
             </p>
             <Link href="/katalog-tovarov">
               <button className="cta-button">Перейти в каталог</button>
@@ -201,7 +201,7 @@ export default function AboutPage() {
             <div className="image-placeholder hero-placeholder">
               <Image
                 src="/image/accessoires.jpg"
-                alt="Аксессуары TOTU"
+                alt="Аксессуары HDD"
                 width={0}
                 height={0}
                 style={{ width: '100%', height: 'auto', objectFit: "cover" }}
@@ -221,10 +221,10 @@ export default function AboutPage() {
           <div className="about-content">
             <h2 className="section-title">О компании</h2>
             <p className="about-text">
-              TOTU — это маркетплейс стильных и надежных аксессуаров для мобильных устройств. Мы являемся официальным дистрибьютором бренда TOTU в Казахстане, предлагая широкий выбор товаров для смартфонов, планшетов и других устройств.
+              HDD — это маркетплейс стильных и надежных аксессуаров для мобильных устройств. Мы являемся официальным дистрибьютором бренда HDD в Казахстане, предлагая широкий выбор товаров для смартфонов, планшетов и других устройств.
             </p>
             <p className="about-text">
-              Мы следим за новыми технологиями и трендами, чтобы наши клиенты получали только актуальные и качественные продукты. TOTU — это идеальное сочетание дизайна, функциональности и доступной цены.
+              Мы следим за новыми технологиями и трендами, чтобы наши клиенты получали только актуальные и качественные продукты. HDD — это идеальное сочетание дизайна, функциональности и доступной цены.
             </p>
             <div className="mission">
               <h3 className="mission-title">Наша миссия</h3>
@@ -285,12 +285,12 @@ export default function AboutPage() {
       {/* Features Section */}
       <section className="features-section">
         <div className="container">
-          <h2 className="section-title">Почему выбирают TOTU</h2>
+          <h2 className="section-title">Почему выбирают HDD</h2>
           <div className="features-grid">
             <div className="feature-card">
               <div className="feature-icon">🏆</div>
               <h3 className="feature-title">Официальный дистрибьютор</h3>
-              <p className="feature-description">Прямые поставки от бренда TOTU</p>
+              <p className="feature-description">Прямые поставки от бренда HDD</p>
             </div>
             <div className="feature-card">
               <div className="feature-icon">📦</div>
@@ -401,7 +401,7 @@ export default function AboutPage() {
         }
 
         .dot.active {
-          background: #00C4B4;
+          background: #E8491D;
         }
 
         .dot:hover {
@@ -439,7 +439,7 @@ export default function AboutPage() {
         }
 
         .accent-text {
-          color: #00C4B4;
+          color: #E8491D;
         }
 
         .hero-description {
@@ -450,7 +450,7 @@ export default function AboutPage() {
         }
 
         .cta-button {
-          background: #00C4B4;
+          background: #E8491D;
           color: white;
           border: none;
           padding: 14px 28px;
@@ -510,7 +510,7 @@ export default function AboutPage() {
           position: absolute;
           top: 20px;
           right: 20px;
-          background: #00C4B4;
+          background: #E8491D;
           color: white;
           border: none;
           width: 40px;
@@ -561,7 +561,7 @@ export default function AboutPage() {
           font-size: 1.3rem;
           font-weight: 500;
           margin-bottom: 12px;
-          color: #00C4B4;
+          color: #E8491D;
         }
 
         .mission-text {
@@ -712,18 +712,18 @@ export default function AboutPage() {
         }
 
         .cta-button.primary {
-          background: #00C4B4;
+          background: #E8491D;
           box-shadow: 0 2px 10px rgba(0, 196, 180, 0.3);
         }
 
         .cta-button.secondary {
           background: transparent;
-          border: 2px solid #00C4B4;
-          color: #00C4B4;
+          border: 2px solid #E8491D;
+          color: #E8491D;
         }
 
         .cta-button.secondary:hover {
-          background: #00C4B4;
+          background: #E8491D;
           color: white;
           box-shadow: 0 2px 10px rgba(0, 196, 180, 0.3);
         }

@@ -182,7 +182,7 @@ export default function TipsPage() {
         }
 
         .accent-text {
-          color: #00C4B4;
+          color: #E8491D;
         }
 
         .hero-description {
@@ -193,7 +193,7 @@ export default function TipsPage() {
         }
 
         .cta-button {
-          background: #00C4B4;
+          background: #E8491D;
           color: white;
           border: none;
           padding: 14px 28px;
@@ -246,7 +246,7 @@ export default function TipsPage() {
           position: absolute;
           top: 20px;
           right: 20px;
-          background: #00C4B4;
+          background: #E8491D;
           color: white;
           border: none;
           width: 40px;
@@ -280,8 +280,8 @@ export default function TipsPage() {
         }
 
         .image-placeholder:hover {
-          border-color: #00C4B4;
-          color: #00C4B4;
+          border-color: #E8491D;
+          color: #E8491D;
         }
 
         .hero-placeholder {
@@ -361,7 +361,7 @@ export default function TipsPage() {
           font-size: 1.4rem;
           font-weight: 500;
           margin-bottom: 20px;
-          color: #00C4B4;
+          color: #E8491D;
         }
 
         .steps-grid {
@@ -388,7 +388,7 @@ export default function TipsPage() {
         .step-number {
           font-size: 1.5rem;
           font-weight: 700;
-          color: #00C4B4;
+          color: #E8491D;
           margin-bottom: 10px;
         }
 
@@ -433,18 +433,18 @@ export default function TipsPage() {
         }
 
         .cta-button.primary {
-          background: #00C4B4;
+          background: #E8491D;
           box-shadow: 0 2px 10px rgba(0, 196, 180, 0.3);
         }
 
         .cta-button.secondary {
           background: transparent;
-          border: 2px solid #00C4B4;
-          color: #00C4B4;
+          border: 2px solid #E8491D;
+          color: #E8491D;
         }
 
         .cta-button.secondary:hover {
-          background: #00C4B4;
+          background: #E8491D;
           color: white;
           box-shadow: 0 2px 10px rgba(0, 196, 180, 0.3);
         }

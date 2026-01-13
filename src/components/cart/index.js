@@ -25,6 +25,7 @@ import {
 import { styled } from "@mui/material/styles";
 import { AddOutlined, RemoveOutlined } from "@mui/icons-material";
 import { motion } from "framer-motion";
+import { brandColors, typography, borderRadius, transitions, spacing } from "@/theme/brandColors";
 
 // Стилизация
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -34,30 +35,30 @@ const StyledContainer = styled(Container)(({ theme }) => ({
 }));
 
 const StyledTable = styled(Table)(({ theme }) => ({
-  borderRadius: "15px",
+  borderRadius: borderRadius.xl,
   overflow: "hidden",
-  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-  backgroundColor: "#FFFFFF",
+  boxShadow: brandColors.shadows.medium,
+  backgroundColor: brandColors.neutral.white,
   "& .MuiTableCell-head": {
-    backgroundColor: "#ADD8E6",
-    color: "#333333",
-    fontWeight: "700",
-    fontSize: "16px",
+    background: brandColors.primary.gradient,
+    color: brandColors.neutral.white,
+    fontWeight: typography.fontWeight.bold,
+    fontSize: typography.fontSize.base,
   },
   "& .MuiTableCell-body": {
-    color: "#333333",
-    fontSize: "14px",
+    color: brandColors.neutral.darkGray,
+    fontSize: typography.fontSize.sm,
   },
 }));
 
 const StyledButton = styled(Button)(({ theme }) => ({
-  borderRadius: "30px",
-  padding: "10px 24px",
+  borderRadius: borderRadius.full,
+  padding: `${spacing.sm} ${spacing.lg}`,
   textTransform: "none",
-  fontWeight: "600",
+  fontWeight: typography.fontWeight.semibold,
+  transition: transitions.normal,
   "&:hover": {
-    transform: "scale(1.05)",
-    transition: "all 0.3s ease",
+    transform: "translateY(-2px)",
   },
 }));
 
@@ -70,10 +71,12 @@ const ClearButton = styled(StyledButton)(({ theme }) => ({
 }));
 
 const OrderButton = styled(StyledButton)(({ theme }) => ({
-  backgroundColor: "#ADD8E6",
-  color: "#333333",
+  background: brandColors.primary.gradient,
+  color: brandColors.neutral.white,
+  boxShadow: brandColors.shadows.medium,
   "&:hover": {
-    backgroundColor: "#87CEEB",
+    background: brandColors.primary.gradientHover,
+    boxShadow: brandColors.shadows.glow,
   },
 }));
 

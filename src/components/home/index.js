@@ -50,21 +50,51 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import debounce from "lodash/debounce";
 import axios from "axios";
+import { brandColors, typography, borderRadius, transitions, spacing } from "@/theme/brandColors";
 // === СТИЛИ ===
 const ProductCard = styled(Card)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   height: "100%",
-  borderRadius: "16px",
-  overflow: "hidden",
-  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-  transition: "all 0.3s ease",
-  backgroundColor: "#FFFFFF",
+  borderRadius: borderRadius.xl,
+  overflow: "visible",
+  boxShadow: brandColors.shadows.small,
+  transition: transitions.normal,
+  backgroundColor: brandColors.neutral.white,
   maxWidth: "100%",
   width: "100%",
+  position: 'relative',
+  
+  "&::before": {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: borderRadius.xl,
+    padding: '2px',
+    background: brandColors.primary.gradient,
+    WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+    WebkitMaskComposite: 'xor',
+    maskComposite: 'exclude',
+    opacity: 0,
+    transition: transitions.normal,
+    pointerEvents: 'none',
+  },
+  
+  "& > *": {
+    position: 'relative',
+    zIndex: 1,
+  },
+  
   "&:hover": {
-    transform: "translateY(-6px)",
-    boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+    transform: "translateY(-8px)",
+    boxShadow: brandColors.shadows.large,
+    
+    "&::before": {
+      opacity: 1,
+    },
   },
 }));
 
@@ -133,15 +163,18 @@ const PriceTypography = styled(Typography)(({ theme }) => ({
 }));
 
 const CartIconButton = styled(IconButton)(({ theme, inCart }) => ({
-  backgroundColor: inCart ? "#E0E0E0" : "#ADD8E6",
-  color: inCart ? "#666666" : "#333333",
+  background: inCart ? brandColors.neutral.paleGray : brandColors.primary.gradient,
+  color: inCart ? brandColors.neutral.mediumGray : brandColors.neutral.white,
   "&:hover": {
-    backgroundColor: inCart ? "#E0E0E0" : "#87CEEB",
+    background: inCart ? brandColors.neutral.paleGray : brandColors.primary.gradientHover,
+    transform: inCart ? 'none' : 'scale(1.1)',
+    boxShadow: inCart ? 'none' : brandColors.shadows.glow,
   },
-  borderRadius: "50%",
-  padding: "10px",
+  borderRadius: borderRadius.full,
+  padding: spacing.sm,
   width: 44,
   height: 44,
+  transition: transitions.normal,
 }));
 
 const FilterDrawer = styled(Drawer)(({ theme }) => ({
@@ -153,34 +186,49 @@ const FilterDrawer = styled(Drawer)(({ theme }) => ({
 }));
 
 const StyledButton = styled(Button)(({ theme }) => ({
-  borderRadius: "30px",
-  padding: "10px 24px",
-  backgroundColor: "#ADD8E6",
-  color: "#333333",
+  borderRadius: borderRadius.full,
+  padding: `${spacing.sm} ${spacing.lg}`,
+  background: brandColors.primary.gradient,
+  color: brandColors.neutral.white,
   textTransform: "none",
-  fontWeight: "600",
+  fontWeight: typography.fontWeight.semibold,
+  boxShadow: brandColors.shadows.small,
+  transition: transitions.normal,
   "&:hover": {
-    backgroundColor: "#87CEEB",
+    background: brandColors.primary.gradientHover,
+    transform: 'translateY(-2px)',
+    boxShadow: brandColors.shadows.medium,
   },
 }));
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
   "& .MuiOutlinedInput-root": {
-    borderRadius: "12px",
-    backgroundColor: "#FFFFFF",
-    "& fieldset": { borderColor: "#ADD8E6" },
-    "&:hover fieldset": { borderColor: "#87CEEB" },
+    borderRadius: borderRadius.lg,
+    backgroundColor: brandColors.neutral.white,
+    "& fieldset": { borderColor: brandColors.neutral.paleGray },
+    "&:hover fieldset": { borderColor: brandColors.primary.light },
+    "&.Mui-focused fieldset": { 
+      borderColor: brandColors.primary.main,
+      borderWidth: '2px',
+    },
   },
 }));
 
 const DarkStyledButton = styled(Button)(({ theme }) => ({
-  borderRadius: "12px",
-  padding: "12px 24px",
-  backgroundColor: "#003087",
-  color: "#FFFFFF",
+  borderRadius: borderRadius.lg,
+  padding: `${spacing.md} ${spacing.xl}`,
+  background: brandColors.primary.gradient,
+  color: brandColors.neutral.white,
   textTransform: "none",
-  fontWeight: "600",
-  "&:hover": { backgroundColor: "#002060" },
+  fontWeight: typography.fontWeight.semibold,
+  fontSize: typography.fontSize.base,
+  boxShadow: brandColors.shadows.medium,
+  transition: transitions.normal,
+  "&:hover": { 
+    background: brandColors.primary.gradientHover,
+    transform: 'translateY(-2px)',
+    boxShadow: brandColors.shadows.glow,
+  },
 }));
 
 // === ДАННЫЕ ===
@@ -385,7 +433,7 @@ export default function Products() {
       </Box>
 
       {/* Новинки */}
-      <Box mb={2} sx={2} lg={1}>
+      <Box mb={2}>
         <Typography variant="h5" fontWeight={600} mb={1} sx={{ fontSize: { xs: "1rem", md: "1.2rem" } }}>
           Новинки
         </Typography>
