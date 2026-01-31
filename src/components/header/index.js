@@ -291,11 +291,24 @@ export default function Header() {
                   Корзина
                 </Box>
                 {cartItemCount > 0 && (
-                  <Badge 
-                    badgeContent={cartItemCount} 
-                    color="error" 
-                    sx={{ ml: 1 }}
-                  />
+                  <Box
+                    sx={{
+                      ml: 1.5,
+                      bgcolor: 'error.main',
+                      color: 'white',
+                      borderRadius: '50%',
+                      width: 22,
+                      height: 22,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '0.75rem',
+                      fontWeight: 'bold',
+                      lineHeight: 1,
+                    }}
+                  >
+                    {cartItemCount}
+                  </Box>
                 )}
               </CartButton>
 
