@@ -107,7 +107,7 @@ export default function AddProductForm() {
     formData.append("name", name);
     formData.append("volume", volume || null);
     formData.append("description", description || "");
-    formData.append("features", Array.isArray(features) ? features.join(", ") : features || "");
+    formData.append("features", features || "");
     formData.append("price", parseFloat(price));
     formData.append("stock", parseInt(stock) || 0);
     formData.append("categoryIds", JSON.stringify(categoryIds));
@@ -124,7 +124,7 @@ export default function AddProductForm() {
       setName("");
       setVolume("");
       setDescription("");
-      setFeatures([]);
+      setFeatures("");
       setPrice("");
       setStock("");
       setCategoryIds([]);

@@ -233,9 +233,11 @@ const DarkStyledButton = styled(Button)(({ theme }) => ({
 
 // === ДАННЫЕ ===
 const banners = [
-  { image: "/image/kupanie.png" },
-  { image: "/image/baner2.png" },
-  { image: "/image/baner4.jpg" },
+  { image: "/image/banner_1.jpg" },
+  { image: "/image/banner_2.jpg" },
+  { image: "/image/banner_3.jpg" },
+  { image: "/image/banner_4.jpg" },
+  { image: "/image/banner_5.jpg" },
 ];
 
 const categories = [
@@ -420,13 +422,26 @@ export default function Products() {
       }}
     >
       {/* Баннеры */}
-      <Box sx={{ borderRadius: "16px", overflow: "hidden", mb: 4 }}>
+      <Box sx={{ 
+        borderRadius: { xs: "16px", md: "32px" }, 
+        overflow: "hidden", 
+        mb: { xs: 4, md: 8 }, 
+        boxShadow: "0 20px 60px -10px rgba(0,0,0,0.15)",
+        position: "relative",
+        backgroundColor: "#f5f5f5"
+      }}>
         <RsCarousel autoplay autoplayInterval={4000}>
           {banners.map((b, i) => (
             <Box key={i} sx={{ position: "relative",
-            //  height: { xs: 200, md: 400 }, 
-             overflow: "hidden" }}>
-              <Image src={b.image} alt="" fill style={{ objectFit: "cover" }} />
+             height: 400, 
+             width: "100%" }}>
+              <Image 
+                src={b.image} 
+                alt="" 
+                fill 
+                style={{ objectFit: "contain" }} 
+                priority={i === 0} 
+              />
             </Box>
           ))}
         </RsCarousel>
@@ -565,7 +580,11 @@ export default function Products() {
           <Typography color="#666" mb={3} sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}>
             Оставьте заявку — мы свяжемся с вами.
           </Typography>
-          <form onSubmit={e => e.preventDefault()}>
+          <form onSubmit={e => {
+            e.preventDefault();
+            const whatsappMessage = encodeURIComponent("Здравуйте я бы хотел получить консультацию по продукции HDD");
+            window.open(`https://wa.me/77080880188?text=${whatsappMessage}`, '_blank');
+          }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <StyledTextField fullWidth placeholder="Ваше имя" value={name} onChange={e => setName(e.target.value)}
@@ -583,49 +602,7 @@ export default function Products() {
         </Box>
       </Box>
 
-      {/* Отзывы */}
-      <Box mt={8} py={6} sx={{ bgcolor: "#fff", borderRadius: "16px" }}>
-        <Typography variant="h4" fontWeight={700} textAlign="center" mb={4} sx={{ textTransform: "uppercase", fontSize: { xs: "1.8rem", md: "2.5rem" } }}>
-          Отзывы клиентов
-        </Typography>
-        <Slider
-          dots
-          infinite
-          speed={500}
-          slidesToShow={3}
-          slidesToScroll={1}
-          autoplay
-          autoplaySpeed={5000}
-          variableWidth={false}
-          responsive={[
-            { breakpoint: 960, settings: { slidesToShow: 2 } },
-            { breakpoint: 600, settings: { slidesToShow: 1 } },
-          ]}
-        >
-          {reviews.map(r => (
-            <Box key={r.id} sx={{ px: 2 }}>
-              <Card sx={{ maxWidth: 360, mx: "auto", borderRadius: "16px", p: 2, bgcolor: "#F8FAFC" }}>
-                <CardContent sx={{ textAlign: "center" }}>
-                  <Box sx={{ width: 80, height: 80, borderRadius: "50%", overflow: "hidden", mx: "auto", mb: 2 }}>
-                    <Image src={r.photo} alt={r.name} width={80} height={80} style={{ objectFit: "cover" }} />
-                  </Box>
-                  <Typography variant="h6" fontWeight={600} sx={{ fontSize: { xs: "1rem", sm: "1.1rem" } }}>
-                    {r.name}
-                  </Typography>
-                  <Box sx={{ display: "flex", justifyContent: "center", my: 1 }}>
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} sx={{ color: i < r.rating ? "#FFD700" : "#E0E0E0", fontSize: { xs: "1rem", sm: "1.2rem" } }} />
-                    ))}
-                  </Box>
-                  <Typography variant="body2" color="#666" sx={{ fontSize: { xs: "0.8rem", sm: "0.9rem" } }}>
-                    {r.review}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Box>
-          ))}
-        </Slider>
-      </Box>
+
 
       {/* Фильтры */}
       <FilterDrawer anchor="right" open={filterOpen} onClose={() => setFilterOpen(false)}>

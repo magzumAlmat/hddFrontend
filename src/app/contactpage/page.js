@@ -26,22 +26,16 @@ export default function ContactPage() {
             </Link>
           </div>
           <div className="hero-image">
-            <Link href="https://go.2gis.com/Ak2mD" target="_blank" rel="noopener noreferrer">
-              <div className="map-container">
-                <Image
-                  src="/image/map.png"
-                  alt="Наше местоположение на 2GIS"
-                  width={550}
-                  height={350}
-                  style={{ objectFit: "cover", cursor: "pointer", borderRadius: '10px' }}
-                  loading="lazy"
-                />
-                <div className="map-overlay">
-                  <LocationOn sx={{ fontSize: 48, color: "#E8491D" }} />
-                  <p>Открыть в 2GIS</p>
-                </div>
-              </div>
-            </Link>
+            <div className="product-showcase">
+              <Image
+                src="/image/contact_hero.jpg"
+                alt="HDD Aroma Diffuser Shell"
+                width={550}
+                height={800}
+                style={{ objectFit: "contain", borderRadius: '10px', width: '100%', height: 'auto' }}
+                loading="lazy"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -251,6 +245,21 @@ export default function ContactPage() {
           opacity: 1;
         }
 
+        .product-showcase {
+          max-width: 550px;
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .product-showcase img {
+          width: 100%;
+          height: auto;
+          max-height: 800px;
+          object-fit: contain;
+        }
+
         /* Contact Section */
         .contact-section {
           padding: 60px 20px;
@@ -403,6 +412,16 @@ export default function ContactPage() {
             height: 250px;
           }
 
+          .product-showcase {
+            max-width: 100%;
+            padding: 0 20px;
+          }
+
+          .product-showcase img {
+            max-height: 350px !important;
+            width: auto !important;
+          }
+
           .section-title {
             font-size: 1.6rem;
           }
@@ -435,6 +454,15 @@ export default function ContactPage() {
             width: 100%;
             max-width: 300px;
             height: 200px;
+          }
+
+          .product-showcase {
+            padding: 0 10px;
+          }
+
+          .product-showcase img {
+            max-height: 280px !important;
+            width: auto !important;
           }
         }
       `}</style>

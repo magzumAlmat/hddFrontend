@@ -16,7 +16,7 @@ const initialState = {
   uploadProgress: 0,
   
 };
-const host = "http://89.207.250.180:8000"
+const host = "https://haodidi.kz"
 export const authSlice = createSlice({
   name: 'auth',
   initialState,

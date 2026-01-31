@@ -200,7 +200,7 @@ export const getAllProductsAction = () => async (dispatch) => {
   const host = initialState.host;
   try {
     dispatch(setLoadingStateReducer());
-    const response = await axios.get(`https://totu.kz/api/api/store/allproducts`);
+    const response = await axios.get(`https://haodidi.kz/api/store/allproducts`);
     dispatch(getAllProductsReducer(response.data));
   } catch (error) {
     console.error('Ошибка API:', error.response?.data || error.message);
@@ -358,7 +358,7 @@ export const getAllOrdersAction = () => async (dispatch) => {
 export const getProductByIdAction = (id) => async (dispatch) => {
   console.log('getProductByIdAction called with id:', id);
   try {
-    const response = await axios.get(`https://totu.kz/api/api/store/product/${id}`);
+    const response = await axios.get(`https://haodidi.kz/api/store/product/${id}`);
     dispatch(getProductByIdReducer(response.data));
   } catch (error) {
     throw error;

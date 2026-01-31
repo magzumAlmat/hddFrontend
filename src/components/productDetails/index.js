@@ -105,7 +105,7 @@ export default function ProductDetailPage({ params = {} }) {
     const fetchProduct = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(`https://totu.kz/api/api/store/product/${params.id}`);
+        const response = await axios.get(`https://haodidi.kz/api/store/product/${params.id}`);
         console.log('response= ',response)
         const data = response.data;
 
@@ -179,7 +179,7 @@ export default function ProductDetailPage({ params = {} }) {
   return (
     <>
       <Head>
-        <title>{product.name} - totu.kz</title>
+        <title>{product.name} - haodidi.kz</title>
         <meta name="description" content={product.description?.slice(0, 160) || "Подробности о товаре"} />
       </Head>
 

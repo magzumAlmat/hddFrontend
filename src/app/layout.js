@@ -12,7 +12,7 @@ const LoggedDataDisplay = dynamic(() => import('@/components/LoggedDataDisplay')
 
 // === МЕТАДАННЫЕ (Server Component) ===
 export const metadata = {
-  metadataBase: new URL('https://totu.kz'),
+  metadataBase: new URL('https://haodidi.kz'),
   title: {
     default: 'Купить Чехол',
     template: '%s | Купить Чехол',
@@ -29,7 +29,7 @@ export const metadata = {
   openGraph: {
     title: 'Купить Чехол — Аксессуары для смартфонов в Казахстане',
     description: 'Чехлы, зарядки, кабели, наушники, защитные стекла — всё для вашего телефона. Доставка по Казахстану.',
-    url: 'https://totu.kz',
+    url: 'https://haodidi.kz',
     siteName: 'Totu.kz',
     images: [
       {

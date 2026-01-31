@@ -162,12 +162,15 @@ const theme = createTheme({
 // Styled Components
 const ProductCard = styled(Card)(({ theme }) => ({
   width: "100%",
-  maxWidth: "300px",
   height: "100%",
   display: "flex",
   flexDirection: "column",
   backgroundColor: "#FFFFFF",
-  margin: "0 auto", // Центрирование карточки в Grid
+  [theme.breakpoints.down("sm")]: {
+    padding: 0,
+    boxShadow: "none",
+    border: "1px solid #eee",
+  },
 }));
 
 const FilterDrawer = styled(Drawer)(({ theme }) => ({
@@ -219,33 +222,47 @@ export default function KatalogComponent() {
   const [minLoadingTimeMet, setMinLoadingTimeMet] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [imageErrors, setImageErrors] = useState({});
+  const [imagesLoaded, setImagesLoaded] = useState({});
 
-  const itemsPerPage = 8;
+  const itemsPerPage = 16;
   const categories = [
     "Все товары",
-    "Купание",
-    "Уход",
-    "Защита",
-    "Средства для мамы",
-    "Органическая линейка",
-    "Другое",
+    "Держатели",
+    "Защитное стекло",
+    "Защитные линзы",
+    "Карт-холдеры",
+    "Пауэрбанки",
+    "Чехлы",
+    "Прочее",
   ];
 
-  // Debounced filter updates
+  // Debounced filter updates (Search, Price)
   const debouncedSetFilters = useCallback(
     debounce((newFilters) => {
       startTransition(() => {
         dispatch(setFilters({ ...newFilters }));
       });
-    }, 300),
+    }, 500),
     [dispatch]
   );
+
+  // Immediate filter updates (Sort, Page, Category)
+  const handleImmediateFilterUpdate = (newFilters) => {
+    startTransition(() => {
+      dispatch(setFilters({ ...newFilters }));
+    });
+  };
 
   // Minimum loading time to prevent flickering
   useEffect(() => {
     const timer = setTimeout(() => setMinLoadingTimeMet(true), 500);
     return () => clearTimeout(timer);
   }, []);
+
+  // Scroll to top when page changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [filters.page]);
 
   // Fetch products on mount
   useEffect(() => {
@@ -360,7 +377,7 @@ export default function KatalogComponent() {
   );
 
   const handleSortChange = (event) => {
-    debouncedSetFilters({ ...filters, sortBy: event.target.value });
+    handleImmediateFilterUpdate({ ...filters, sortBy: event.target.value });
   };
 
   const handleCategoryChange = (cat) => {
@@ -369,7 +386,7 @@ export default function KatalogComponent() {
       : filters.selectedCategories.includes(cat)
         ? filters.selectedCategories.filter((c) => c !== cat)
         : [...filters.selectedCategories, cat];
-    debouncedSetFilters({ ...filters, selectedCategories: newCategories, page: 1 });
+    handleImmediateFilterUpdate({ ...filters, selectedCategories: newCategories, page: 1 });
   };
 
   const handleResetFilters = () => {
@@ -378,6 +395,25 @@ export default function KatalogComponent() {
   };
 
   const isLoading = status === "loading" || !minLoadingTimeMet || isPending;
+
+  /* Local state for immediate input feedback */
+  const [searchTermLocal, setSearchTermLocal] = useState("");
+
+  // Sync local state with global filters (e.g. on reset)
+  useEffect(() => {
+    setSearchTermLocal(filters.searchTerm || "");
+  }, [filters.searchTerm]);
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchTermLocal(value);
+    debouncedSetFilters({ ...filters, searchTerm: value, page: 1 });
+  };
+
+  const handleClearSearch = () => {
+    setSearchTermLocal("");
+    debouncedSetFilters({ ...filters, searchTerm: "", page: 1 });
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -393,60 +429,63 @@ export default function KatalogComponent() {
           }}
         >
           <Stack spacing={0}>
-            <Stack direction={{ xs: "column", sm: "row" }} spacing={0} alignItems="center">
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={{ xs: 2, sm: 2 }} alignItems="center" width="100%">
               <TextField
                 fullWidth
                 placeholder="Поиск по названию..."
-                value={filters.searchTerm}
-                onChange={(e) => debouncedSetFilters({ ...filters, searchTerm: e.target.value, page: 1 })}
+                value={searchTermLocal}
+                onChange={handleSearchChange}
+
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
                       <Search sx={{ color: "primary.main" }} />
                     </InputAdornment>
                   ),
-                  endAdornment: filters.searchTerm && (
+                  endAdornment: searchTermLocal && (
                     <InputAdornment position="end">
-                      <IconButton onClick={() => debouncedSetFilters({ ...filters, searchTerm: "", page: 1 })}>
+                      <IconButton onClick={handleClearSearch}>
                         <Clear sx={{ color: "primary.main" }} />
                       </IconButton>
                     </InputAdornment>
                   ),
                 }}
               />
-              <FormControl fullWidth={{ xs: true, sm: false }} sx={{ minWidth: { sm: 200 }, display: { xs: "none", sm: "block" } }}>
-                <Select
-                  value={filters.sortBy}
-                  onChange={handleSortChange}
-                  displayEmpty
-                  renderValue={(value) => (value ? value : "Сортировка")}
+              <Box sx={{ display: "flex", width: { xs: "100%", sm: "auto" }, gap: 1, alignItems: "center" }}>
+                <FormControl fullWidth sx={{ minWidth: { sm: 200 } }}>
+                  <Select
+                    value={filters.sortBy}
+                    onChange={handleSortChange}
+                    displayEmpty
+                    renderValue={(value) => (value ? value : "Сортировка")}
+                  >
+                    <MenuItem value="">Сортировка</MenuItem>
+                    <MenuItem value="price_asc">Цена: по возрастанию</MenuItem>
+                    <MenuItem value="price_desc">Цена: по убыванию</MenuItem>
+                    <MenuItem value="name_asc">Название: А-Я</MenuItem>
+                    <MenuItem value="name_desc">Название: Я-А</MenuItem>
+                    <MenuItem value="stock_asc">Наличие: по возрастанию</MenuItem>
+                    <MenuItem value="stock_desc">Наличие: по убыванию</MenuItem>
+                  </Select>
+                </FormControl>
+                <IconButton
+                  onClick={() => setFilterOpen(true)}
+                  sx={{
+                    bgcolor: "primary.main",
+                    color: "#333333",
+                    borderRadius: "12px",
+                    width: "56px",
+                    height: "56px",
+                    p: 1.5,
+                    "&:hover": {
+                      bgcolor: "#87CEEB",
+                      transform: "scale(1.05)",
+                    },
+                  }}
                 >
-                  <MenuItem value="">Сортировка</MenuItem>
-                  <MenuItem value="price_asc">Цена: по возрастанию</MenuItem>
-                  <MenuItem value="price_desc">Цена: по убыванию</MenuItem>
-                  <MenuItem value="name_asc">Название: А-Я</MenuItem>
-                  <MenuItem value="name_desc">Название: Я-А</MenuItem>
-                  {/* <MenuItem value="volume_asc">Объем: по возрастанию</MenuItem>
-                  <MenuItem value="volume_desc">Объем: по убыванию</MenuItem> */}
-                  <MenuItem value="stock_asc">Наличие: по возрастанию</MenuItem>
-                  <MenuItem value="stock_desc">Наличие: по убыванию</MenuItem>
-                </Select>
-              </FormControl>
-              {/* <IconButton
-                onClick={() => setFilterOpen(true)}
-                sx={{
-                  bgcolor: "primary.main",
-                  color: "#333333",
-                  borderRadius: "50%",
-                  p: 1.5,
-                  "&:hover": {
-                    bgcolor: "#87CEEB",
-                    transform: "scale(1.1)",
-                  },
-                }}
-              >
-                <FilterList />
-              </IconButton> */}
+                  <FilterList />
+                </IconButton>
+              </Box>
             </Stack>
             {/* <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, justifyContent: "center" }}>
               {categories.map((cat) => (
@@ -528,20 +567,51 @@ export default function KatalogComponent() {
         )}
 
         {/* Product Grid */}
-        <Box mb={6}>
-          <Grid container spacing={{ xs: 1, sm: 2, md: 3 }} justifyContent="center">
-            {isLoading ? (
+        <Box mb={6} sx={{ position: "relative", minHeight: "400px" }}>
+          {isPending && (
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                bgcolor: "rgba(255, 255, 255, 0.7)",
+                zIndex: 10,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: "20px",
+                backdropFilter: "blur(2px)",
+              }}
+            >
+              <CircularProgress size={60} thickness={4} />
+            </Box>
+          )}
+          
+          <Box 
+            sx={{ 
+              display: "grid", 
+              gridTemplateColumns: { 
+                xs: "repeat(2, 1fr)", 
+                md: "repeat(4, 1fr)" 
+              }, 
+              gap: { xs: 1, sm: 2 },
+              mb: 6 
+            }}
+          >
+            {status === "loading" && !minLoadingTimeMet ? (
               [...Array(8)].map((_, idx) => (
-                <Grid item xs={12} sm={6} md={3} key={idx}>
-                  <Skeleton variant="rectangular" height={400} sx={{ borderRadius: "15px", width: "300px", margin: "0 auto" }} />
-                </Grid>
+                <Box key={idx} sx={{ width: "100%" }}>
+                  <Skeleton variant="rectangular" height={300} sx={{ borderRadius: "15px", width: "100%", height: "100%" }} />
+                </Box>
               ))
             ) : currentItems.length === 0 ? (
-              <Grid item xs={12}>
-                <Typography variant="body1" color="text.secondary" textAlign="center">
+              <Box sx={{ gridColumn: "1 / -1", textAlign: "center", py: 4 }}>
+                <Typography variant="body1" color="text.secondary">
                   Товары не найдены.
                 </Typography>
-              </Grid>
+              </Box>
             ) : (
               currentItems.map((item) => {
                 const images = item.ProductImages || [];
@@ -550,22 +620,51 @@ export default function KatalogComponent() {
                   : "/placeholder-image.jpg";
 
                 return (
-                  <Grid item xs={6} sm={6} md={3} key={item.id}>
-                    <ProductCard
-                      component={motion.div}
-                      initial={{ opacity: 0, y: 50 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: item.id * 0.1 }}
-                    >
+                  <ProductCard
+                    key={item.id}
+                    component={motion.div}
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: item.id * 0.1 }}
+                    sx={{ 
+                      opacity: isPending ? 0.4 : 1, 
+                      transition: "opacity 0.3s",
+                      height: "100%",
+                      width: "100%"
+                    }}
+                  >
                       {images.length > 0 ? (
-                        <Box sx={{ height: "200px", width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                        <Box sx={{ height: { xs: "140px", sm: "200px" }, width: "100%", display: "flex", justifyContent: "center", alignItems: "center", position: "relative" }}>
+                          {!imagesLoaded[item.id] && (
+                            <Skeleton 
+                              variant="rectangular" 
+                              sx={{ 
+                                position: "absolute", 
+                                top: 0, 
+                                left: 0, 
+                                width: "100%", 
+                                height: "100%", 
+                                borderRadius: "10px" 
+                              }} 
+                            />
+                          )}
                           <Image
                             src={imageErrors[item.id] ? "/placeholder-image.jpg" : imageUrl}
                             alt={item.name}
                             width={280}
                             height={180}
-                            style={{ objectFit: "contain", maxWidth: "100%", maxHeight: "100%" }}
-                            onError={() => setImageErrors((prev) => ({ ...prev, [item.id]: true }))}
+                            style={{ 
+                              objectFit: "contain", 
+                              maxWidth: "100%", 
+                              maxHeight: "100%",
+                              opacity: imagesLoaded[item.id] ? 1 : 0,
+                              transition: "opacity 0.3s ease-in-out"
+                            }}
+                            onError={() => {
+                              setImageErrors((prev) => ({ ...prev, [item.id]: true }));
+                              setImagesLoaded((prev) => ({ ...prev, [item.id]: true }));
+                            }}
+                            onLoadingComplete={() => setImagesLoaded((prev) => ({ ...prev, [item.id]: true }))}
                             unoptimized
                           />
                         </Box>
@@ -586,7 +685,7 @@ export default function KatalogComponent() {
                           </Typography>
                         </Box>
                       )}
-                      <CardContent sx={{ flexGrow: 1, padding: "16px" }}>
+                      <CardContent sx={{ flexGrow: 1, padding: { xs: "4px", sm: "16px" } }}>
                         <Typography
                           variant="h6"
                           component={Link}
@@ -600,6 +699,9 @@ export default function KatalogComponent() {
                             WebkitBoxOrient: "vertical",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
+                            fontSize: { xs: "0.75rem", sm: "1.25rem" },
+                            lineHeight: { xs: 1.1, sm: 1.5 },
+                            height: { xs: "2.2em", sm: "3em" },
                           }}
                         >
                           {item.name}
@@ -612,6 +714,7 @@ export default function KatalogComponent() {
                             WebkitBoxOrient: "vertical",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
+                            fontSize: { xs: "0.65rem", sm: "0.875rem" }
                           }}
                         >
                           {item.Categories.length > 0
@@ -620,41 +723,46 @@ export default function KatalogComponent() {
                         </Typography>
                         <Typography
                           variant="body2"
-                          mt={1}
+                          mt={0.5}
                           sx={{
                             display: "-webkit-box",
-                            WebkitLineClamp: 3,
+                            WebkitLineClamp: 2,
                             WebkitBoxOrient: "vertical",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
+                            fontSize: { xs: "0.65rem", sm: "0.875rem" },
+                            height: { xs: "2.2em", sm: "unset" }
                           }}
                         >
                           {item.description}
                         </Typography>
-                        {/* <Typography variant="body2" mt={1}>
-                          Объем: {item.volume}
-                        </Typography> */}
-                        <Typography variant="body2" mt={1}>
+                        <Typography variant="body2" mt={0.5} sx={{ fontSize: { xs: "0.65rem", sm: "0.875rem" } }}>
                           Наличие: {item.stock} шт.
                         </Typography>
                       </CardContent>
-                      <CardActions sx={{ p: 2, justifyContent: "space-between" }}>
-                        <Typography variant="subtitle1" fontWeight={700}>
+                      <CardActions sx={{ p: { xs: 0.5, sm: 2 }, justifyContent: "space-between", flexDirection: { xs: "column", sm: "row" }, alignItems: { xs: "center", sm: "center" }, gap: { xs: 0.5, sm: 0 } }}>
+                        <Typography variant="subtitle1" fontWeight={700} sx={{ fontSize: { xs: "0.8rem", sm: "1rem" } }}>
                           {parseFloat(item.price)?.toLocaleString() || "0"} ₸
                         </Typography>
                         <Button
                           onClick={() => dispatch(addToCartProductAction(item))}
                           disabled={isInCart(item)}
+                          sx={{ 
+                            width: { xs: "100%", sm: "auto" }, 
+                            minWidth: { xs: "unset", sm: "64px" },
+                            fontSize: { xs: "0.65rem", sm: "0.875rem" },
+                            padding: { xs: "4px 8px", sm: "10px 24px" },
+                            height: { xs: "24px", sm: "auto" }
+                          }}
                         >
-                          {isInCart(item) ? "В корзине" : "Добавить"}
+                          {isInCart(item) ? "В корз." : "В корзину"}
                         </Button>
                       </CardActions>
-                    </ProductCard>
-                  </Grid>
+                  </ProductCard>
                 );
               })
             )}
-          </Grid>
+          </Box>
         </Box>
 
         {/* Pagination */}
@@ -663,7 +771,7 @@ export default function KatalogComponent() {
             <Pagination
               count={totalPages}
               page={filters.page}
-              onChange={(e, page) => debouncedSetFilters({ ...filters, page })}
+              onChange={(e, page) => handleImmediateFilterUpdate({ ...filters, page })}
               sx={{
                 "& .MuiPaginationItem-root": {
                   color: "primary.main",

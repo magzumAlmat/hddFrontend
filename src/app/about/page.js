@@ -489,44 +489,46 @@ export default function AboutPage() {
           left: 0;
           width: 100%;
           height: 100%;
-          background: rgba(0, 0, 0, 0.85);
+          background: rgba(0, 0, 0, 0.9);
           display: flex;
           align-items: center;
           justify-content: center;
-          z-index: 1000;
+          z-index: 2000;
+          padding: 20px;
         }
 
         .modal-content {
           position: relative;
-          width: 90%;
-          max-width: 1200px;
-          height: 90vh;
-          max-height: 800px;
-          border-radius: 10px;
-          overflow: hidden;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .modal-close {
-          position: absolute;
+          position: fixed;
           top: 20px;
           right: 20px;
-          background: #E8491D;
+          background: rgba(232, 73, 29, 0.9);
           color: white;
           border: none;
-          width: 40px;
-          height: 40px;
+          width: 44px;
+          height: 44px;
           border-radius: 50%;
-          font-size: 1.5rem;
+          font-size: 2rem;
+          line-height: 1;
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
           transition: all 0.3s ease;
-          z-index: 1001;
+          z-index: 2001;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
         .modal-close:hover {
-          background: #00A69A;
+          background: #E8491D;
           transform: scale(1.1);
         }
 
@@ -784,11 +786,6 @@ export default function AboutPage() {
 
           .banner-content {
             padding: 15px;
-          }
-
-          .modal-content {
-            width: 95%;
-            height: 80vh;
           }
         }
 
